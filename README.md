@@ -8,7 +8,7 @@ It has three subprojects:
 * `frontend-nodejs`: A node.js "frontend" service that forwards path argument of its URL to the "backend" services `backend-spring` and `backend-golang`, collects the results, and returns them. 
 
 ## Preconditions
-Install Docker and Kubernetes locally. Kubernetes comes e.g. as part of Docker Desktop.
+Running Docker and Kubernetes installations. For example both Docker and Kubernetes come with Docker Desktop.
 
 ## Spring Boot Application
 ```shell script

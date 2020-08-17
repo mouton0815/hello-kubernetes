@@ -1,0 +1,30 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: backend-golang
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: backend-golang-pod
+  template:
+    metadata:
+      labels:
+        app: backend-golang-pod
+    spec:
+      containers:
+        - name: backend-golang-container
+          image: mouton4711/kubernetes:backend-golang
+          ports:
+            - containerPort: 8080
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: backend-golang
+spec:
+  selector:
+    app: backend-golang-pod
+  ports:
+    - port: 80
+      targetPort: 8080

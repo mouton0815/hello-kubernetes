@@ -1,0 +1,30 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: backend-spring
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: backend-spring-pod
+  template:
+    metadata:
+      labels:
+        app: backend-spring-pod
+    spec:
+      containers:
+        - name: backend-spring-container
+          image: mouton4711/kubernetes:backend-spring
+          ports:
+            - containerPort: 8080
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: backend-spring
+spec:
+  selector:
+    app: backend-spring-pod
+  ports:
+    - port: 80
+      targetPort: 8080

@@ -1,0 +1,39 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: frontend-nodejs
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: frontend-nodejs-pod
+  template:
+    metadata:
+      labels:
+        app: frontend-nodejs-pod
+    spec:
+      containers:
+        - name: frontend-nodejs-container
+          image: mouton4711/kubernetes:frontend-nodejs
+          ports:
+            - containerPort: 8080
+          env:
+            - name: BACKEND_URL1
+              value: "backend-golang"
+            - name: BACKEND_URL2
+              value: "backend-spring"
+      imagePullSecrets:
+        - name: my-secret
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: frontend-nodejs
+spec:
+  ports:
+    - name: service-port
+      port: 80
+      targetPort: 8080
+  selector:
+    app: frontend-nodejs-pod
+  type: LoadBalancer

@@ -1,0 +1,12 @@
+{
+  "name": "frontend-nodejs",
+  "version": "0.1.0",
+  "license": "MIT",
+  "scripts": {
+    "start": "node frontend-nodejs.js"
+  },
+  "dependencies": {
+    "axios": "^0.19.2",
+    "express": "^4.17.1"
+  }
+}

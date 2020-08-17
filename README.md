@@ -8,7 +8,7 @@ It has three subprojects:
 * `frontend-nodejs`: A node.js "frontend" service that forwards path argument of its URL to the "backend" services `backend-spring` and `backend-golang`, collects the results, and returns them. 
 
 ## Preconditions
-Running Docker and Kubernetes installations. For example both Docker and Kubernetes come with Docker Desktop.
+Running Docker and Kubernetes installations. For example, both Docker and Kubernetes come with Docker Desktop.
 
 ## Spring Boot Application
 ```shell script
@@ -24,7 +24,7 @@ $ kubectl apply -f ./backend-golang/kubernetes.yml
 ```
 Service `backend-golang` does not expose its endpoint to the load balancer.
 
-## Node Application
+## Node.js Application
 ```shell script
 $ docker image build --tag frontend-nodejs ./frontend-nodejs
 $ kubectl apply -f ./frontend-nodejs/kubernetes.yml

@@ -32,7 +32,7 @@ func RequestLogger(targetMux http.Handler) http.Handler {
 
 func sayHello(w http.ResponseWriter, r *http.Request) {
     message := r.URL.Path
-    message = "[GO] Hello " + strings.TrimPrefix(message, "/")
+    message = "[GOLANG] Hello " + strings.TrimPrefix(message, "/")
     _, err := w.Write([]byte(message))
     if err != nil {
         fmt.Printf("Error when sending response %v", err)

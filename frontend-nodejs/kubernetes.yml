@@ -18,9 +18,9 @@ spec:
           ports:
             - containerPort: 8080
           env:
-            - name: BACKEND_URL1
+            - name: BACKEND_HOST1
               value: "backend-golang"
-            - name: BACKEND_URL2
+            - name: BACKEND_HOST2
               value: "backend-spring"
       imagePullSecrets:
         - name: my-secret

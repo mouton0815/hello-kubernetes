@@ -2,7 +2,7 @@
 
 This project studies the provisioning of interconnected applications ("microservices") as Docker containers and their deployment to Kubernetes.
  
-There are three subprojects:
+It has three subprojects, each containing a microservice:
 * `backend-spring`: A trival "hello" Spring Boot application that echos the path part of its URL. For example, when called like http://localhost/World, it replies with "`[SPRING] Hello World`".
 * `backend-golang`: Identical to `backend-spring`, but written in Go.
 * `frontend-nodejs`: A node.js "frontend" service that forwards path argument of its URL to the "backend" services `backend-spring` and `backend-golang`, collects the results, and returns them.

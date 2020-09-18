@@ -31,10 +31,9 @@ $ kubectl apply -f ./backend-spring/kubernetes.yml
 $ kubectl apply -f ./backend-golang/kubernetes.yml
 $ kubectl apply -f ./frontend-nodejs/kubernetes.yml
 ```
-Alternatively, you can combine all yaml files using the `kustomize` command, and then deploy everything together:
+Alternatively, you can combine all yaml files using the "kustomize" flag `-k` and deploy everything together:
 ```shell script
-$ kubectl kustomize . > kubernetes.yml 
-$ kubectl apply -f ./kubernetes.yml
+$ kubectl apply -k .
 ```
 
 The services `backend-spring` and `backend-golang` do not expose their endpoints to the outside (they use the default service type `ClusterIP`).

@@ -17,13 +17,14 @@ spec:
           image: mouton4711/kubernetes:frontend-nodejs
           ports:
             - containerPort: 8080
+          envFrom:
+            - configMapRef:
+                name: translation-config
           env:
             - name: BACKEND_HOST1
               value: "backend-golang"
             - name: BACKEND_HOST2
               value: "backend-spring"
-      imagePullSecrets:
-        - name: my-secret
 ---
 kind: Service
 apiVersion: v1

@@ -17,6 +17,9 @@ spec:
           image: mouton4711/kubernetes:backend-golang
           ports:
             - containerPort: 8080
+          envFrom:
+            - configMapRef:
+                name: translation-config
 ---
 kind: Service
 apiVersion: v1

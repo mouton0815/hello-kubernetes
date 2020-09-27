@@ -1,6 +1,7 @@
 package com.example.hello;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.ws.rs.GET;
@@ -14,10 +15,11 @@ import javax.ws.rs.core.MediaType;
 @Path("/")
 public class HelloController {
     private final RedisClient redisClient;
+    private final String greetingLabel;
 
-    @Autowired
-    public HelloController(final RedisClient redisClient) {
+    public HelloController(@Autowired final RedisClient redisClient, @Value("${greetingLabel}") final String greetingLabel) {
         this.redisClient = redisClient;
+        this.greetingLabel = greetingLabel;
     }
 
     @GET
@@ -25,6 +27,6 @@ public class HelloController {
     @Produces(MediaType.TEXT_PLAIN)
     public String hello(@PathParam("name") String name) {
         final long count = redisClient.incr("backend-spring-counter");
-        return "[SPRING] Hello " + name + " (call #" + count + ")";
+        return "[SPRING] " + greetingLabel + " " + name + " (call #" + count + ")";
     }
 }

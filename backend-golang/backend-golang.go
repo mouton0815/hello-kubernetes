@@ -7,6 +7,7 @@ package main
 import (
     "fmt"
     "net/http"
+    "os"
     "strings"
     "time"
 )
@@ -14,6 +15,8 @@ import (
 const (
     PORT = "8080"
 )
+
+var greetingLabel string = "#greetingLabel#"
 
 func RequestLogger(targetMux http.Handler) http.Handler {
     return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -32,7 +35,7 @@ func RequestLogger(targetMux http.Handler) http.Handler {
 
 func sayHello(w http.ResponseWriter, r *http.Request) {
     message := r.URL.Path
-    message = "[GOLANG] Hello " + strings.TrimPrefix(message, "/")
+    message = "[GOLANG] " + greetingLabel + " " + strings.TrimPrefix(message, "/")
     _, err := w.Write([]byte(message))
     if err != nil {
         fmt.Printf("Error when sending response %v", err)
@@ -40,6 +43,9 @@ func sayHello(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+    if os.Getenv("greetingLabel") != "" {
+        greetingLabel = os.Getenv("greetingLabel")
+    }
     mux := http.NewServeMux()
     mux.HandleFunc("/", sayHello)
     fmt.Printf("Server listens on port %s\n", PORT)

@@ -53,6 +53,6 @@ If you manage your Kubernetes cluster with [Rancher](https://rancher.com/), you 
 Change greeting language:
 ```
 $ kubectl edit configmap translation-config
-# Change the value of "greeting" and save
+# Change the value of "greetingLabel" and save
 $ kubectl rollout restart deployment backend-spring backend-golang frontend-nodejs
 ```

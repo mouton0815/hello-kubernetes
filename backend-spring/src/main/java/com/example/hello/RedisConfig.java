@@ -1,5 +1,6 @@
 package com.example.hello;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
@@ -10,9 +11,12 @@ import org.springframework.data.redis.serializer.GenericToStringSerializer;
 
 @Configuration
 public class RedisConfig {
+    @Value("${redisHost}")
+    private String redisHost;
+
     @Bean
     JedisConnectionFactory jedisConnectionFactory() {
-        final RedisStandaloneConfiguration redisConfig = new RedisStandaloneConfiguration("redis", 6379);
+        final RedisStandaloneConfiguration redisConfig = new RedisStandaloneConfiguration(redisHost, 6379);
         return new JedisConnectionFactory(redisConfig);
     }
 

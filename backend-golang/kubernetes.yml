@@ -3,7 +3,7 @@ apiVersion: apps/v1
 metadata:
   name: backend-golang
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: backend-golang-pod

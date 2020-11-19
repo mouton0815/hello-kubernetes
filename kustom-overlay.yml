@@ -1,0 +1,21 @@
+# This is an overlay included into kustomization.yml that adapts the number of replicas
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: frontend-nodejs
+spec:
+  replicas: 2
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: backend-spring
+spec:
+  replicas: 2
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: backend-golang
+spec:
+  replicas: 2

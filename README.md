@@ -20,9 +20,7 @@ _Note_: You can omit this step if you are interested in Kubernetes only.
 All images are available at [Docker Hub](https://hub.docker.com/) in repository [mouton4711/kubernetes](https://hub.docker.com/repository/docker/mouton4711/kubernetes).
 
 ```shell script
-$ docker image build --tag mouton4711/kubernetes:backend-spring ./backend-spring
-$ docker image build --tag mouton4711/kubernetes:backend-golang ./backend-golang
-$ docker image build --tag mouton4711/kubernetes:frontend-nodejs ./frontend-nodejs
+$ sh build-images.sh
 ```
 
 ## Deploy to Kubernetes

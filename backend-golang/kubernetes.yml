@@ -29,5 +29,6 @@ spec:
   selector:
     app: backend-golang-pod
   ports:
-    - port: 80
+    - name: http-backend-golang-port
+      port: 80
       targetPort: 8080

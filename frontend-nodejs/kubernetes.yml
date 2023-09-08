@@ -32,7 +32,7 @@ metadata:
   name: frontend-nodejs
 spec:
   ports:
-    - name: service-port
+    - name: http-service-port
       port: 80
       targetPort: 8080
   selector:

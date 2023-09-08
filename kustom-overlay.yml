@@ -2,20 +2,6 @@
 kind: Deployment
 apiVersion: apps/v1
 metadata:
-  name: frontend-nodejs
-spec:
-  replicas: 2
----
-kind: Deployment
-apiVersion: apps/v1
-metadata:
-  name: backend-spring
-spec:
-  replicas: 2
----
-kind: Deployment
-apiVersion: apps/v1
-metadata:
-  name: backend-golang
+  name: unused
 spec:
   replicas: 2

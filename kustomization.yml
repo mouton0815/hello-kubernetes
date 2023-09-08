@@ -1,6 +1,3 @@
-apiVersion: kustomize.config.k8s.io/v1beta1
-kind: Kustomization
-
 # All resources needed for the application package
 resources:
   - redis/kubernetes.yml
@@ -9,14 +6,13 @@ resources:
   - frontend-nodejs/kubernetes.yml
 
 # Merge an overlay file that modifies the number of replicas
-patchesStrategicMerge:
-  - kustom-overlay.yml
+patches:
+  - path: kustom-overlay.yml
+    target:
+      labelSelector: "group=hello-kubernetes"
 
 # Generate a translation config from literals
 configMapGenerator:
   - name: translation-config
     literals:
       - greetingLabel=Hello
-
-generatorOptions:
-  disableNameSuffixHash: true

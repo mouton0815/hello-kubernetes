@@ -1,9 +1,9 @@
-const express = require('express')
-const axios = require('axios').default
+import express from 'express'
+import axios from 'axios'
 
 const PORT = 8080
 
-const BACKEND_HOSTS = process.env.BACKEND_HOSTS.split(',')
+const BACKEND_HOSTS = (process.env.BACKEND_HOSTS || "").split(',')
 const GREETING_LABEL = process.env.greetingLabel || '#greetingLabel#'
 
 const app = express()

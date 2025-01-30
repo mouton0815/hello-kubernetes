@@ -1,0 +1,19 @@
+# Simplest possible Ingress, which sets up a Google Cloud LB (see ingress.class)
+# The spec may have many more rules for routing, load balancing, TLS, and so forth
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: my-api-ingress
+  annotations:
+    kubernetes.io/ingress.class: "gce"  # This makes use of GKE's ingress controller
+spec:
+  rules:
+    - http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: frontend-nodejs
+                port:
+                  number: 80

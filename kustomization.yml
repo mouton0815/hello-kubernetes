@@ -4,6 +4,7 @@ resources:
   - backend-golang/kubernetes.yml
   - backend-spring/kubernetes.yml
   - frontend-nodejs/kubernetes.yml
+# - ingress.yml # specify an Ingress explictly
 
 # Merge an overlay file that modifies the number of replicas
 patches:

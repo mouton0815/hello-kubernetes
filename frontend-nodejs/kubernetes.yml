@@ -40,3 +40,4 @@ spec:
   selector:
     app: frontend-nodejs-pod
   type: LoadBalancer
+# loadBalancerIP: 0.0.0.0 # bind the LB created by the cloud provider to a static address

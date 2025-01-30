@@ -30,7 +30,7 @@ $ kubectl apply -f ./backend-spring/kubernetes.yml
 $ kubectl apply -f ./backend-golang/kubernetes.yml
 $ kubectl apply -f ./frontend-nodejs/kubernetes.yml
 ```
-Alternatively (and preferably!) you can combine all yaml files using the "kustomize" flag `-k` and deploy everything together:
+Alternatively (and preferably) you can combine all yaml files using the "kustomize" flag `-k` and deploy everything together:
 ```shell script
 $ kubectl apply -k .
 ```
@@ -41,9 +41,19 @@ Service `frontend-nodejs` has type [LoadBalancer](https://kubernetes.io/docs/con
 If you run Docker Desktop, there is nothing additional to do, because Docker Deskop exposes services of type `LoadBalancer` to `localhost`.
 You should be able to access the application from a web browser  
 ```
-curl -s http://localhost/World
+$ curl -s http://localhost/World
 ```
-If your Kubernetes runs on a public cloud, you need to create an [Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress/) service
+If your Kubernetes runs on a public cloud, it depends on the cloud provider.
+[GCP](https://console.cloud.google.com/) also creates a Load Balancer automatically for services of type `LoadBalancer`.
+You can obtain the ephemeral IP address of the Load Balancer with
+```
+$ kubectl get svc frontend-nodejs
+```
+and then use the displayed `EXTERNAL-IP` for calling the service: 
+```
+$ curl http://<EXTERNAL-IP>/World
+```
+For other public clouds, you may need to create an [Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress/) service
 that connects to the cloud provider's load balancer. Alternatively, you can setup an own load balancer like [ingress-nginx](https://github.com/kubernetes/ingress-nginx).
 If you manage your Kubernetes cluster with [Rancher](https://rancher.com/), you can provision an ingress service using the [Rancher UI](https://rancher.com/docs/rancher/v2.x/en/k8s-in-rancher/load-balancers-and-ingress/ingress/).  
 

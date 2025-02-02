@@ -7,6 +7,8 @@ use crate::http_server::spawn_http_server;
 
 #[tokio::main]
 async fn main() {
+    env_logger::init();
+
     let redis_host = get_env("redisHost", "localhost");
     let greeting_label = get_env("greetingLabel", "#greetingLabel#");
     let redis = RedisClient::new(redis_host.as_str(), "backend-rust-counter").unwrap();

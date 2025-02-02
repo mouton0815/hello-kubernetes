@@ -1,4 +1,5 @@
 use std::{thread, time};
+use log::{info, warn};
 use redis::{Client, Commands, Connection, RedisResult};
 
 pub struct RedisClient {
@@ -15,11 +16,11 @@ impl RedisClient {
         loop {
             match client.get_connection() {
                 Ok(conn) => {
-                    println!("Connection to Redis established - attempt {}", attempts);
+                    info!("Connection to Redis established - attempt {}", attempts);
                     return Ok(Self { conn, key })
                 }
                 Err(err) => {
-                    println!("{} - attempt {}", err.to_string(), attempts); // TODO: Error log
+                    warn!("{} - attempt {}", err.to_string(), attempts);
                     if attempts >= 3 {
                         return Err(err)
                     }

@@ -1,6 +1,7 @@
 # All resources needed for the application package
 resources:
   - redis/kubernetes.yml
+  - backend-rust/kubernetes.yml
   - backend-golang/kubernetes.yml
   - backend-spring/kubernetes.yml
   - frontend-nodejs/kubernetes.yml

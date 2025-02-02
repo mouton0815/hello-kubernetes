@@ -1,0 +1,36 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: backend-rust
+  labels:
+    group: hello-kubernetes
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend-rust-pod
+  template:
+    metadata:
+      labels:
+        app: backend-rust-pod
+    spec:
+      containers:
+        - name: backend-rust-container
+          image: mouton4711/kubernetes:backend-rust
+          ports:
+            - containerPort: 8080
+          envFrom:
+            - configMapRef:
+                name: translation-config
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: backend-rust
+spec:
+  selector:
+    app: backend-rust-pod
+  ports:
+    - name: http-backend-rust-port
+      port: 80
+      targetPort: 8080

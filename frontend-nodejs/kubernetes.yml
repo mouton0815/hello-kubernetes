@@ -24,7 +24,7 @@ spec:
                 name: translation-config
           env:
             - name: BACKEND_HOSTS
-              value: "backend-golang,backend-spring"
+              value: "backend-golang,backend-rust,backend-spring"
 ---
 kind: Service
 apiVersion: v1

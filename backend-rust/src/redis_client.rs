@@ -2,11 +2,12 @@ use std::{thread, time};
 use redis::{Client, Commands, Connection, RedisResult};
 
 pub struct RedisClient {
-    conn: Connection
+    conn: Connection,
+    key: &'static str
 }
 
 impl RedisClient {
-    pub fn new(host: &str) -> RedisResult<Self> {
+    pub fn new(host: &str, key: &'static str) -> RedisResult<Self> {
         let address = format!("redis://{}", host);
         let client = Client::open(address.as_str())?;
         // Redis may not be up and running yet, so try at most three times to connect
@@ -15,7 +16,7 @@ impl RedisClient {
             match client.get_connection() {
                 Ok(conn) => {
                     println!("Connection to Redis established - attempt {}", attempts);
-                    return Ok(Self { conn })
+                    return Ok(Self { conn, key })
                 }
                 Err(err) => {
                     println!("{} - attempt {}", err.to_string(), attempts); // TODO: Error log
@@ -30,7 +31,7 @@ impl RedisClient {
         }
     }
 
-    pub fn incr(&mut self, key: &str) -> RedisResult<u32> {
-        self.conn.incr(key, 1)
+    pub fn incr(&mut self) -> RedisResult<u32> {
+        self.conn.incr(self.key, 1)
     }
 }

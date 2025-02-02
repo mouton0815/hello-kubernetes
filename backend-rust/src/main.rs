@@ -9,7 +9,7 @@ use crate::http_server::spawn_http_server;
 async fn main() {
     let redis_host = get_env("redisHost", "localhost");
     let greeting_label = get_env("greetingLabel", "#greetingLabel#");
-    let redis = RedisClient::new(redis_host.as_str()).unwrap();
+    let redis = RedisClient::new(redis_host.as_str(), "backend-rust-counter").unwrap();
     spawn_http_server(redis, greeting_label).await.unwrap();
 }
 

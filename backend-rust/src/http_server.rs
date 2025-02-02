@@ -33,7 +33,7 @@ pub async fn spawn_http_server(redis: RedisClient, greeting_label: String) -> Re
 
 async fn rest_handler(State(state): State<MutexSharedState>, Path(path): Path<String>) -> Result<String, StatusCode> {
     let mut guard = state.lock().unwrap();
-    match (*guard).redis.incr("foo") { // TODO: "backend-golang-counter"
+    match (*guard).redis.incr() {
         Ok(value) => Ok(format!("[RUSTIC] {} {} (call #{})\n", (*guard).label, path, value)),
         Err(_) => Err(StatusCode::INTERNAL_SERVER_ERROR)
     }

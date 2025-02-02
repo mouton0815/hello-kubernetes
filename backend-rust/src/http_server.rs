@@ -6,11 +6,22 @@ use axum::routing::get;
 use tokio::net::TcpListener;
 use crate::redis_client::RedisClient;
 
-type MutexSharedState = Arc<Mutex<RedisClient>>;
+struct SharedState {
+    redis: RedisClient,
+    label: String
+}
 
-pub async fn spawn_http_server(redis: RedisClient) -> Result<(), std::io::Error> {
+impl SharedState {
+    fn new(redis: RedisClient, greeting_label: String) -> Self {
+        Self{ redis, label: greeting_label }
+    }
+}
+
+type MutexSharedState = Arc<Mutex<SharedState>>;
+
+pub async fn spawn_http_server(redis: RedisClient, greeting_label: String) -> Result<(), std::io::Error> {
     println!("Spawn HTTP server");
-    let state = Arc::new(Mutex::new(redis));
+    let state = Arc::new(Mutex::new(SharedState::new(redis, greeting_label)));
     let app = Router::new()
         .route("/{*key}", get(rest_handler))
         .with_state(state);
@@ -21,10 +32,9 @@ pub async fn spawn_http_server(redis: RedisClient) -> Result<(), std::io::Error>
 }
 
 async fn rest_handler(State(state): State<MutexSharedState>, Path(path): Path<String>) -> Result<String, StatusCode> {
-    let greeting_label = "#greetingLabel#"; // TODO: Move to env
     let mut guard = state.lock().unwrap();
-    match (*guard).incr("foo") { // TODO: "backend-golang-counter"
-        Ok(value) => Ok(format!("[RUSTIC] {} {} (call #{})\n", greeting_label, path, value).to_string()),
+    match (*guard).redis.incr("foo") { // TODO: "backend-golang-counter"
+        Ok(value) => Ok(format!("[RUSTIC] {} {} (call #{})\n", (*guard).label, path, value)),
         Err(_) => Err(StatusCode::INTERNAL_SERVER_ERROR)
     }
 }

@@ -5,16 +5,17 @@ use std::env;
 use crate::redis_client::RedisClient;
 use crate::http_server::spawn_http_server;
 
-const REDIS_HOST: &str = "localhost";
-
 #[tokio::main]
 async fn main() {
-    let redis_host = match env::var("redisHost") {
-        Ok(host) => host,
-        Err(_) => REDIS_HOST.to_string()
-    };
-    println!("Redis host: {}", redis_host);
+    let redis_host = get_env("redisHost", "localhost");
+    let greeting_label = get_env("greetingLabel", "#greetingLabel#");
     let redis = RedisClient::new(redis_host.as_str()).unwrap();
-    spawn_http_server(redis).await.unwrap();
+    spawn_http_server(redis, greeting_label).await.unwrap();
 }
 
+fn get_env(name: &str, default: &str) -> String {
+    match env::var(name) {
+        Ok(value) => value,
+        Err(_) => default.to_string()
+    }
+}

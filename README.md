@@ -2,10 +2,11 @@
 
 This project studies the provisioning of interconnected applications ("microservices") as Docker containers and their deployment to Kubernetes.
  
-It has three subprojects, each containing a microservice:
+It has four subprojects, each containing a microservice:
 * `backend-spring`: A trival "hello" Spring Boot application that echos the path part of its URL. For example, when called like http://localhost/World, it replies with "`[SPRING] Hello World`".
 * `backend-golang`: Identical to `backend-spring`, but written in Go.
-* `frontend-nodejs`: A node.js "frontend" service that forwards path argument of its URL to the "backend" services `backend-spring` and `backend-golang`, collects the results, and returns them.
+* `backend-spring`: Identical to `backend-spring`, but written in Rust.
+* `frontend-nodejs`: A node.js "frontend" service that forwards path argument of its URL to the "backend" services (`backend-spring`, `backend-golang`, `backend-rust`), collects the results, and returns them.
 
 ## Preconditions
 You need running Docker and Kubernetes installations, either on your workstation or at a public cloud provider.
@@ -28,6 +29,7 @@ $ sh build-images.sh
 $ kubectl create configmap translation-config --from-literal=greetingLabel=Hello # Create config map from literals
 $ kubectl apply -f ./backend-spring/kubernetes.yml
 $ kubectl apply -f ./backend-golang/kubernetes.yml
+$ kubectl apply -f ./backend-rust/kubernetes.yml
 $ kubectl apply -f ./frontend-nodejs/kubernetes.yml
 ```
 Alternatively (and preferably) you can combine all yaml files using the "kustomize" flag `-k` and deploy everything together:
@@ -35,7 +37,7 @@ Alternatively (and preferably) you can combine all yaml files using the "kustomi
 $ kubectl apply -k .
 ```
 
-The services `backend-spring` and `backend-golang` do not expose their endpoints to the outside (they use the default service type `ClusterIP`).
+The services `backend-spring`, `backend-golang`, and `backend-rust` do not expose their endpoints to the outside (they use the default service type `ClusterIP`).
 
 Service `frontend-nodejs` has type [LoadBalancer](https://kubernetes.io/docs/concepts/services-networking/service/#loadbalancer).
 If you run Docker Desktop, there is nothing additional to do, because Docker Deskop exposes services of type `LoadBalancer` to `localhost`.
@@ -62,5 +64,5 @@ Change greeting language:
 ```
 $ kubectl edit configmap translation-config
 # Change the value of "greetingLabel" and save
-$ kubectl rollout restart deployment backend-spring backend-golang frontend-nodejs
+$ kubectl rollout restart deployment backend-spring backend-golang backend-rust frontend-nodejs
 ```

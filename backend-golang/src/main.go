@@ -1,28 +1,29 @@
 package main
 
 import (
-    "os"
+	"os"
 )
 
 const (
-    PORT = 8080
+	PORT = 8080
 )
 
-var redisHost = "localhost"
-var greetingLabel = "#greetingLabel#"
-
 func main() {
-    if os.Getenv("redisHost") != "" {
-        redisHost = os.Getenv("redisHost")
-    }
-    if os.Getenv("greetingLabel") != "" {
-        greetingLabel = os.Getenv("greetingLabel")
-    }
+	redisHost := getEnv("redisHost", "localhost")
+	greetingLabel := getEnv("greetingLabel", "#greetingLabel#")
 
-    redisClient := NewRedisClient(redisHost)
-    defer redisClient.Close()
+	redisClient := NewRedisClient(redisHost, "backend-golang-counter")
+	defer redisClient.Close()
 
-    httpHandler := NewHttpHandler(redisClient, greetingLabel)
-    httpServer := NewHttpServer(httpHandler)
-    httpServer.Listen(PORT)
+	httpHandler := NewHttpHandler(redisClient, greetingLabel)
+	httpServer := NewHttpServer(httpHandler)
+	httpServer.Listen(PORT)
+}
+
+func getEnv(name string, fallback string) string {
+	value, ok := os.LookupEnv(name)
+	if ok {
+		return value
+	}
+	return fallback
 }

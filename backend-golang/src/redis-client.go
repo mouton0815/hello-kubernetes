@@ -7,16 +7,17 @@ import (
 )
 
 type RedisClient interface {
-	Incr(key string) int
+	Incr() int
 	Close()
 }
 
 type RedisClientImpl struct {
 	conn redis.Conn
+	key  string
 }
 
-func (r RedisClientImpl) Incr(key string) int {
-	res, err := redis.Int(r.conn.Do("INCR", key))
+func (r RedisClientImpl) Incr() int {
+	res, err := redis.Int(r.conn.Do("INCR", r.key))
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -28,13 +29,13 @@ func (r RedisClientImpl) Close() {
 }
 
 // NewRedisClient Factory function
-func NewRedisClient(host string) RedisClient {
+func NewRedisClient(host string, key string) RedisClient {
 	address := host + ":6379"
 	log.Printf("Connecting to Redis at %s ...", address)
 	// Redis may not be up and running yet, so try at most three times to connect
 	attempts := 1
 	for {
-		client, err := createRedisClient(address)
+		client, err := createRedisClient(address, key)
 		if err == nil {
 			log.Println("Connection to Redis established - attempt", attempts)
 			return client
@@ -49,11 +50,11 @@ func NewRedisClient(host string) RedisClient {
 	}
 }
 
-func createRedisClient(address string) (RedisClient, error) {
+func createRedisClient(address string, key string) (RedisClient, error) {
 	var timeout time.Duration = 3 * 1000 * 1000 * 1000 // 3 seconds
 	conn, err := redis.Dial("tcp", address, redis.DialConnectTimeout(timeout))
 	if err == nil {
-		return RedisClientImpl{conn}, nil
+		return RedisClientImpl{conn, key}, nil
 	}
 	return nil, err
 }

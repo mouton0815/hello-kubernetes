@@ -10,3 +10,4 @@ build/
 target/
 package-lock.json
 Cargo.lock
+go.sum

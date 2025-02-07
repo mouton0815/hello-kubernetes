@@ -13,6 +13,7 @@ spec:
     metadata:
       labels:
         app: backend-rust-pod
+        env: base
     spec:
       containers:
         - name: backend-rust-container

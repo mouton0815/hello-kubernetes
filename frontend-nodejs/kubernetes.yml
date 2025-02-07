@@ -13,6 +13,7 @@ spec:
     metadata:
       labels:
         app: frontend-nodejs-pod
+        env: base
     spec:
       containers:
         - name: frontend-nodejs-container

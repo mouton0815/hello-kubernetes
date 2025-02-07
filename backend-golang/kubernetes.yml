@@ -13,6 +13,7 @@ spec:
     metadata:
       labels:
         app: backend-golang-pod
+        env: base
     spec:
       containers:
         - name: backend-golang-container

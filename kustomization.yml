@@ -7,11 +7,21 @@ resources:
   - frontend-nodejs/kubernetes.yml
 # - ingress.yml # specify an Ingress explictly
 
-# Merge an overlay file that modifies the number of replicas
+# Demonstration of two ways of patching: A. strategic merge patch and B. JSON patch
+# The label selector "group=hello-kubernetes" includes all deployments except Redis
 patches:
+    # A. Merge an overlay file that modifies the number of replicas
   - path: kustom-overlay.yml
     target:
       labelSelector: "group=hello-kubernetes"
+    # B. Set a label on all deployment and therewith restart them
+  - target:
+      kind: Deployment
+      labelSelector: "group=hello-kubernetes"
+    patch: |-
+      - op: replace
+        path: /spec/template/metadata/labels/env
+        value: green
 
 # Generate a translation config from literals
 configMapGenerator:

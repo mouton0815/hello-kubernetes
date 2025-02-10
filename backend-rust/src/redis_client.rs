@@ -1,38 +1,24 @@
-use std::{thread, time};
-use log::{info, warn};
-use redis::{Client, Commands, Connection, RedisResult};
+use anyhow::Result;
+use log::info;
+use r2d2::Pool;
+use redis::{Client, Commands};
 
 pub struct RedisClient {
-    conn: Connection,
+    pool: Pool<Client>,
     key: &'static str
 }
 
 impl RedisClient {
-    pub fn new(host: &str, key: &'static str) -> RedisResult<Self> {
+    pub fn new(host: &str, key: &'static str) -> Result<Self> {
         let address = format!("redis://{}", host);
         let client = Client::open(address.as_str())?;
-        // Redis may not be up and running yet, so try at most three times to connect
-        let mut attempts = 1;
-        loop {
-            match client.get_connection() {
-                Ok(conn) => {
-                    info!("Connection to Redis established - attempt {}", attempts);
-                    return Ok(Self { conn, key })
-                }
-                Err(err) => {
-                    warn!("{} - attempt {}", err.to_string(), attempts);
-                    if attempts >= 3 {
-                        return Err(err)
-                    }
-                }
-            }
-            let duration = time::Duration::from_secs(3);
-            thread::sleep(duration);
-            attempts += 1;
-        }
+        let pool = Pool::builder().build(client)?;
+        info!("Redis client created");
+        return Ok(Self { pool, key })
     }
 
-    pub fn incr(&mut self) -> RedisResult<u32> {
-        self.conn.incr(self.key, 1)
+    pub fn incr(&mut self) -> Result<u32> {
+        let mut conn = self.pool.get()?;
+        Ok(conn.incr(self.key, 1)?)
     }
 }

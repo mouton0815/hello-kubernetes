@@ -11,3 +11,4 @@ target/
 package-lock.json
 Cargo.lock
 go.sum
+dump.rdb

@@ -1,7 +1,8 @@
 package main
 
 import (
-	"github.com/gomodule/redigo/redis"
+	"context"
+	"github.com/redis/go-redis/v9"
 	"log"
 	"time"
 )
@@ -12,49 +13,44 @@ type RedisClient interface {
 }
 
 type RedisClientImpl struct {
-	conn redis.Conn
-	key  string
+	client *redis.Client
+	ctx    context.Context
+	key    string
 }
 
 func (r RedisClientImpl) Incr() int {
-	res, err := redis.Int(r.conn.Do("INCR", r.key))
+	res, err := r.client.Incr(r.ctx, r.key).Result()
 	if err != nil {
+		log.Println("Redis call failed")
 		log.Fatal(err)
 	}
-	return res
+	return int(res)
 }
 
 func (r RedisClientImpl) Close() {
-	_ = r.conn.Close()
+	_ = r.client.Close()
 }
 
 // NewRedisClient Factory function
 func NewRedisClient(host string, key string) RedisClient {
 	address := host + ":6379"
 	log.Printf("Connecting to Redis at %s ...", address)
-	// Redis may not be up and running yet, so try at most three times to connect
-	attempts := 1
-	for {
-		client, err := createRedisClient(address, key)
-		if err == nil {
-			log.Println("Connection to Redis established - attempt", attempts)
-			return client
-		}
-		log.Println(err, "- attempt", attempts)
-		if attempts >= 3 {
-			panic(err)
-		}
-		var duration time.Duration = 3 * 1000 * 1000 * 1000 // 3 seconds
-		time.Sleep(duration)
-		attempts += 1
+	ctx := context.Background()
+	client := redis.NewClient(&redis.Options{
+		Addr:            address,
+		Password:        "", // no password set
+		DB:              0,  // use default DB
+		MaxRetries:      10,
+		MinRetryBackoff: 100 * time.Millisecond,
+		MaxRetryBackoff: 3 * time.Second, // 15 seconds max
+		OnConnect: func(ctx context.Context, conn *redis.Conn) error {
+			log.Println("New Redis connection established")
+			return nil
+		},
+	})
+	_, err := client.Ping(ctx).Result()
+	if err != nil {
+		log.Fatalf("Could not connect to Redis: %v", err)
 	}
-}
-
-func createRedisClient(address string, key string) (RedisClient, error) {
-	var timeout time.Duration = 3 * 1000 * 1000 * 1000 // 3 seconds
-	conn, err := redis.Dial("tcp", address, redis.DialConnectTimeout(timeout))
-	if err == nil {
-		return RedisClientImpl{conn, key}, nil
-	}
-	return nil, err
+	return RedisClientImpl{client, ctx, key}
 }

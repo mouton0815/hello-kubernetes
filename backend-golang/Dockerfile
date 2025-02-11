@@ -7,6 +7,6 @@ COPY src/go.mod /app/
 COPY src/*.go /app/
 
 WORKDIR /app
-RUN go get github.com/gomodule/redigo/redis
+RUN go get server
 RUN go build -o main .
 CMD ["/app/main"]

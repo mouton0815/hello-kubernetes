@@ -16,7 +16,8 @@ spec:
     spec:
       containers:
         - name: frontend-nodejs-container
-          image: mouton4711/kubernetes:frontend-nodejs
+          image: mouton4711/hello_k8s_frontend-nodejs
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080
           envFrom:

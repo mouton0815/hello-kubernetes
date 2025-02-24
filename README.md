@@ -21,7 +21,7 @@ _Note_: You can omit this step if you are interested in Kubernetes only.
 All images are available at [Docker Hub](https://hub.docker.com/) in repository [mouton4711/kubernetes](https://hub.docker.com/repository/docker/mouton4711/kubernetes).
 
 ```shell script
-$ sh build-images.sh
+$ sh build-local-images.sh
 ```
 
 ## Deploy to Kubernetes

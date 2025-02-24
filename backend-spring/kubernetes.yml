@@ -16,7 +16,8 @@ spec:
     spec:
       containers:
         - name: backend-spring-container
-          image: mouton4711/kubernetes:backend-spring
+          image: mouton4711/hello_k8s_backend-spring
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080
           envFrom:

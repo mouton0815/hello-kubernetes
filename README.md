@@ -5,7 +5,7 @@ This project studies the provisioning of interconnected applications ("microserv
 It has four subprojects, each containing a microservice:
 * `backend-spring`: A trival "hello" Spring Boot application that echos the path part of its URL. For example, when called like http://localhost/World, it replies with "`[SPRING] Hello World`".
 * `backend-golang`: Identical to `backend-spring`, but written in Go.
-* `backend-spring`: Identical to `backend-spring`, but written in Rust.
+* `backend-rust`: Identical to `backend-spring`, but written in Rust.
 * `frontend-nodejs`: A node.js "frontend" service that forwards path argument of its URL to the "backend" services (`backend-spring`, `backend-golang`, `backend-rust`), collects the results, and returns them.
 
 ## Preconditions
@@ -18,11 +18,32 @@ If you decide for a public cloud provider, you can use their managed Kubernetes 
 
 ## Build Docker Images
 _Note_: You can omit this step if you are interested in Kubernetes only.
-All images are available at [Docker Hub](https://hub.docker.com/) in repository [mouton4711/kubernetes](https://hub.docker.com/repository/docker/mouton4711/kubernetes).
+All images are available at [Docker Hub](https://hub.docker.com/).
 
 ```shell script
 $ sh build-local-images.sh
 ```
+
+## Load Balancer Setup
+The Ingress configuration expects a load balancer,
+which is specified by the annotation `kubernetes.io/ingress.class` in file [ingress.yml](./ingress.yml).
+It defaults to "nginx". To use nginx on Docker Desktop, please run
+```shell
+$ kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/cloud/deploy.yaml
+```
+
+## TLS Configuration
+Next, you need to set up TLS. This consists of two steps:
+```shell
+# 1. Create a self-signed certificate
+openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout tls.key -out tls.crt -subj "/CN=localhost"
+```
+
+```shell
+# 2. Add the certificate as secret to Kubernetes
+kubectl create secret tls hello-kubernetes-tls --cert=tls.crt --key=tls.key
+```
+Make sure to use exactly this name, as the [ingress.yml](./ingress.yml) refers to it.
 
 ## Deploy to Kubernetes
 ```shell script
@@ -37,27 +58,21 @@ Alternatively (and preferably) you can combine all yaml files using the "kustomi
 $ kubectl apply -k .
 ```
 
-The services `backend-spring`, `backend-golang`, and `backend-rust` do not expose their endpoints to the outside (they use the default service type `ClusterIP`).
+You should be able to access the application from a web browser (skip CA verification with flag `k`):  
+```
+$ curl -k https://localhost/World
+```
 
-Service `frontend-nodejs` has type [LoadBalancer](https://kubernetes.io/docs/concepts/services-networking/service/#loadbalancer).
-If you run Docker Desktop, there is nothing additional to do, because Docker Deskop exposes services of type `LoadBalancer` to `localhost`.
-You should be able to access the application from a web browser  
-```
-$ curl -s http://localhost/World
-```
 If your Kubernetes runs on a public cloud, it depends on the cloud provider.
-[GCP](https://console.cloud.google.com/) also creates a Load Balancer automatically for services of type `LoadBalancer`.
-You can obtain the ephemeral IP address of the Load Balancer with
+[GCP](https://console.cloud.google.com/) creates a Load Balancer if the `kubernetes.io/ingress.class` is "gce".
+You can obtain the ephemeral IP address of the Ingress with
 ```
-$ kubectl get svc frontend-nodejs
+$ kubectl get ingress
 ```
-and then use the displayed `EXTERNAL-IP` for calling the service: 
+and then use the displayed `ADDRESS` for calling the service: 
 ```
-$ curl http://<EXTERNAL-IP>/World
+$ curl https://<ADDRESS>/World
 ```
-For other public clouds, you may need to create an [Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress/) service
-that connects to the cloud provider's load balancer. Alternatively, you can setup an own load balancer like [ingress-nginx](https://github.com/kubernetes/ingress-nginx).
-If you manage your Kubernetes cluster with [Rancher](https://rancher.com/), you can provision an ingress service using the [Rancher UI](https://rancher.com/docs/rancher/v2.x/en/k8s-in-rancher/load-balancers-and-ingress/ingress/).  
 
 ## Extras
 Change greeting language:

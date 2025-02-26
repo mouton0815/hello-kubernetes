@@ -5,7 +5,7 @@ resources:
   - backend-golang/kubernetes.yml
   - backend-spring/kubernetes.yml
   - frontend-nodejs/kubernetes.yml
-  - ingress.yml # specify an Ingress explictly
+  - ingress.yml # specify an Ingress explicitly
 
 # Demonstration of two ways of patching: A. strategic merge patch and B. JSON patch
 # The label selector "group=hello-kubernetes" includes all deployments except Redis

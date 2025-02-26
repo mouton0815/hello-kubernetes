@@ -12,3 +12,4 @@ package-lock.json
 Cargo.lock
 go.sum
 dump.rdb
+tls.*

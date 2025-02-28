@@ -24,6 +24,7 @@ pub async fn spawn_http_server(redis: RedisClient, greeting_label: String) -> Re
     info!("Spawn HTTP server ...");
     let state = Arc::new(Mutex::new(SharedState::new(redis, greeting_label)));
     let router = Router::new()
+        .route("/", get(rest_handler))
         .route("/{*_}", get(rest_handler))
         .with_state(state);
 
@@ -37,8 +38,12 @@ pub async fn spawn_http_server(redis: RedisClient, greeting_label: String) -> Re
     Ok(())
 }
 
-async fn rest_handler(State(state): State<MutexSharedState>, Path(path): Path<String>) -> Result<String, StatusCode> {
+async fn rest_handler(State(state): State<MutexSharedState>, path: Option<Path<String>>) -> Result<String, StatusCode> {
     let mut guard = state.lock().unwrap();
+    let path = match path {
+        None => "".to_string(),
+        Some(p) => p.to_string()
+    };
     match (*guard).redis.incr() {
         Ok(value) => {
             let msg = format!("[RUSTIC] {} {} (call #{})", (*guard).label, path, value);

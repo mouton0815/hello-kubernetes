@@ -12,12 +12,11 @@ app.get('*', async (req, res) => {
     console.log(req.method, req.url)
     const name = req.url.substr(1)
     try {
-        const results = await proxyToBackends(BACKEND_HOSTS, name)
+        const results = await Promise.all(BACKEND_HOSTS.map(host => proxyToBackend(host, name)))
         const joined = results.reduce((acc, result) => `${acc}\n${result}`, `[NODEJS] ${GREETING_LABEL} ${name}`)
         res.send(joined)
     } catch (e) {
-        console.error(e)
-        res.status(400).send(e)
+        res.status(500).send(e.message)
     }
 })
 
@@ -25,12 +24,15 @@ app.listen(PORT, () => {
     console.log(`Server listens on port ${PORT}`)
 })
 
-async function proxyToBackends(hosts, name) {
-    const urls = hosts.map(host => `http://${host}/${name}`)
-    console.log(`Call target URLs ${urls}`)
-    const promises = urls.map(url => axios.get(url))
-    const responses = await Promise.all(promises)
-    const results = responses.map(response => response.data)
-    console.log(`Retrieved results ${results}`)
-    return results
+async function proxyToBackend(host: string, name: string) {
+    const url = `http://${host}/${name}`
+    console.log(`Call target URL ${url}`)
+    try {
+        const response = await axios.get(url)
+        console.log(`Retrieved result ${response.data} from ${url}`)
+        return response.data
+    } catch (e) {
+        console.warn(e.message)
+        throw e
+    }
 }

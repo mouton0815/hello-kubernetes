@@ -32,6 +32,7 @@ apiVersion: v1
 metadata:
   name: frontend-nodejs
 spec:
+  # type: LoadBalancer
   ports:
     - name: http-service-port
       port: 80

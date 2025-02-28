@@ -5,19 +5,17 @@ kind: Ingress
 metadata:
   name: my-api-ingress
   annotations:
-    kubernetes.io/ingress.class: "nginx"  # Or "gce", which makes use of GKE's ingress controller
-    #nginx.ingress.kubernetes.io/rewrite-target: /
-    #nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    kubernetes.io/ingress.class: "nginx"  # Use "gce" for GKE's ingress controller
 spec:
-  tls:
-    - hosts:
-        - localhost
-      secretName: hello-kubernetes-tls
+#  tls:
+#    - hosts:
+#        - localhost
+#      secretName: hello-kubernetes-tls
   rules:
     - http:
         paths:
-          - path: /
-            pathType: Prefix
+          - path: / # Use "/*" for GKE
+            pathType: Prefix # Use "ImplementationSpecific" for GKE
             backend:
               service:
                 name: frontend-nodejs

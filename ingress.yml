@@ -7,10 +7,10 @@ metadata:
   annotations:
     kubernetes.io/ingress.class: "nginx"  # Use "gce" for GKE's ingress controller
 spec:
-#  tls:
-#    - hosts:
-#        - localhost
-#      secretName: hello-kubernetes-tls
+  tls:
+    - hosts:
+        - localhost
+      secretName: hello-kubernetes-tls
   rules:
     - http:
         paths:

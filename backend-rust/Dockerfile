@@ -1,4 +1,4 @@
-FROM rust:1.78
+FROM rust:1.85
 
 ENV redisHost=redis
 ENV RUST_LOG=info

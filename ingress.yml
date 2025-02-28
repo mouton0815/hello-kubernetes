@@ -14,8 +14,8 @@ spec:
   rules:
     - http:
         paths:
-          - path: / # Use "/*" for GKE
-            pathType: Prefix # Use "ImplementationSpecific" for GKE
+          - path: /
+            pathType: Prefix
             backend:
               service:
                 name: frontend-nodejs

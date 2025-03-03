@@ -58,9 +58,9 @@ Alternatively (and preferably) you can combine all yaml files using the "kustomi
 $ kubectl apply -k .
 ```
 
-You should be able to access the application from a web browser (skip CA verification with flag `k`):  
+You should be able to access the application from a web browser:  
 ```
-$ curl -k https://localhost/World
+$ curl --cacert tls.crt https://localhost/World
 ```
 
 If your Kubernetes runs on a public cloud, it depends on the cloud provider.
@@ -71,7 +71,7 @@ $ kubectl get ingress
 ```
 and then use the displayed `ADDRESS` for calling the service: 
 ```
-$ curl https://<ADDRESS>/World
+$ curl --cacert tls.crt https://<ADDRESS>/World
 ```
 
 ## Extras
